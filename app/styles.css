@@ -197,6 +197,9 @@ a.active {
 }
 
 .cafe-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
   background: #ffffff;
   padding: 1rem;
   border-radius: 12px;
@@ -214,6 +217,11 @@ a.active {
 
 .cafe-name {
   font-weight: bold;
+  font-size: 1rem;
+}
+
+.cafe-address {
+  font-size: 0.85rem;
 }
 
 .cafe-img {
