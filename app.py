@@ -235,7 +235,7 @@ def profile():
             
         # update database
         users_col.update_one(
-            {"_id": ObjectId(current_user.id)},
+            {"_id": ObjectId(current_user.get_id())},
             {"$set": update_fields}
         )
         
