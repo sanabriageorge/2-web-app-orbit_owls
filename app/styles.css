@@ -47,7 +47,7 @@ a {
 }
 
 a.active {
-  color: #4f46e5;
+  color: #3e2723;
   font-weight: 600;
 }
 /* search specfic styles */
@@ -155,7 +155,7 @@ a.active {
 .zip-submit {
   flex: 1;              
   padding: 0.9rem 1rem;
-  background-color: #4f46e5;
+  background-color: #3e2723;
   color: white;
   border: 1px solid #ddd;
   border-radius: 10px;
@@ -306,7 +306,7 @@ a.active {
 }
 
 .input-field:focus {
-  border-color: #4f46e5;
+  border-color: #3e2723;
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
@@ -314,7 +314,7 @@ a.active {
   width: 100%;
   padding: 1rem;
   margin-top: 0.5rem;
-  background-color: #4f46e5;
+  background-color: #3e2723;
   color: white;
   border: none;
   border-radius: 10px;
@@ -325,7 +325,7 @@ a.active {
 }
 
 .primary-btn:hover {
-  background-color: #4338ca;
+  background-color: #3e2723;
 }
 
 .auth-link {
@@ -337,7 +337,7 @@ a.active {
 
 .auth-link a {
   display: inline;
-  color: #4f46e5;
+  color: #3e2723;
   font-weight: 600;
   padding: 0;
 }
@@ -397,7 +397,7 @@ a {
 }
 
 a.active {
-  color: #4f46e5;
+  color: #3e2723;
   font-weight: 600;
 }
 
@@ -560,7 +560,7 @@ a.active {
   padding: 1rem;
   margin-top: 0.5rem;
   background: #ffffff;
-  color: #4f46e5;
+  color: #3e2723;
   border: 1px solid #ddd;
   border-radius: 10px;
   font-size: 1rem;
@@ -857,7 +857,7 @@ a {
 }
 
 a.active {
-  color: #4f46e5;
+  color: #3e2723;
   font-weight: 600;
 }
 
@@ -1020,7 +1020,7 @@ a.active {
   padding: 1rem;
   margin-top: 0.5rem;
   background: #ffffff;
-  color: #4f46e5;
+  color: #3e2723;
   border: 1px solid #ddd;
   border-radius: 10px;
   font-size: 1rem;
@@ -1437,8 +1437,8 @@ a.active {
 }
 
 .delete-btn {
-  background: rgba(0, 0, 0, 0.6);
-  color: white;
+  background: #3e2723;
+  color:white ;
   border: none;
   width: 26px;
   height: 26px;

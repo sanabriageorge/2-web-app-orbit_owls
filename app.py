@@ -1,5 +1,6 @@
 import datetime
 import os
+import re
 
 import pymongo
 from bson.objectid import ObjectId
@@ -43,6 +44,27 @@ def update_cafe_rating(cafe_id):
         {"_id": cafe_id},
         {"$set": {"rating": average}}
     )
+#Helper function to extract times 
+def hours_list_from_range(hours_str):
+    parts= re.split(r"\s*[–—-]\s*",hours_str.strip())
+    if len(parts) != 2:
+        return [8, 10, 12, 15, 18]
+    def parse_time(t):
+        m= re.search(r"(\d{1,2})(?::(\d{2}))?\s*(AM|PM)", t, re.I)
+        if not m:
+            return None
+        h= int(m.group(1))
+        ampm= m.group(3).upper()
+        if ampm== "PM" and h!= 12:
+            h+= 12
+        if ampm== "AM" and h== 12:
+            h= 0
+        return h
+
+    start= parse_time(parts[0])
+    end= parse_time(parts[1])
+    return list(range(start, end + 1))
+
 # set up flask-login
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -298,9 +320,8 @@ def cafe_detail(cafe_id):
         "cafe_id": cafe["_id"],
         "created_at": {"$gte": since}
     }))
-    ny_tz = ZoneInfo("America/New_York")
-    utc_tz = ZoneInfo("UTC")
-
+    ny_tz= ZoneInfo("America/New_York")
+    utc_tz= ZoneInfo("UTC")
     hour_counts= {}
     #Convert to NY
     for c in checkins:
@@ -309,7 +330,8 @@ def cafe_detail(cafe_id):
         hr= ny_time.hour
         hour_counts[hr]= hour_counts.get(hr, 0) + 1
 
-    hours= [8, 10, 12, 15, 18]
+    hours= hours_list_from_range(cafe.get("hours", ""))
+    hours= hours[::2] #List every two hours 
     peak_times= [{"hour": hr, "count": hour_counts.get(hr, 0)} for hr in hours]
     max_count= max((p["count"] for p in peak_times), default=0)
 
@@ -324,7 +346,8 @@ def cafe_detail(cafe_id):
         reviews=reviews,
         current_user_id=current_user_id,
         peak_times=peak_times,
-        max_count=max_count
+        max_count=max_count,
+        hours=hours
     )
 
 #Posting reviews

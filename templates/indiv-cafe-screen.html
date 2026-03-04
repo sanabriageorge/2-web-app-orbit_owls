@@ -136,11 +136,15 @@
         <form method="POST" action="{{ url_for('add_checkin', cafe_id=cafe._id) }}" style="margin-bottom: 0.75rem;">
           <label class="label">Check in time (NY)</label>
           <select class="input-field" name="hour" required>
-            <option value="8">8am</option>
-            <option value="10">10am</option>
-            <option value="12">12pm</option>
-            <option value="15">3pm</option>
-            <option value="18">6pm</option>
+            {% for h in hours %}
+              <option value="{{ h }}">
+                {% if h== 0 %}12am
+                {% elif h < 12 %}{{ h }}am
+                {% elif h== 12 %}12pm
+                {% else %}{{ h-12 }}pm
+                {% endif %}
+              </option>
+            {% endfor %}
           </select>
           <button class="primary-btn" type="submit" style="margin-top:0.5rem;">Check in</button>
         </form>
@@ -156,9 +160,7 @@
                 {% else %}{{ p.hour - 12 }}pm
                 {% endif %}
               </div>
-        
               <div class="bar"><span></span></div>
-        
               <div class="level">
                 {% if pct < 35 %}Low
                 {% elif pct < 70 %}Med
@@ -182,7 +184,6 @@
            max="5"
            required
            class="input-field" />
-
         <label class="label" style="margin-top: 0.5rem;">Your review</label>
         <textarea name="text"
               rows="3"
