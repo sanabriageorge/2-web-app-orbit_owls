@@ -21,7 +21,9 @@
           <div class="badge-row">
             <span class="badge">{{reviews|length}} reviews</span>
             <span class="badge">{{cafe.price_range}}</span>
-            <span class="badge">{{cafe.hours}}</span>
+            <span class="badge">
+              Today: {{ cafe.hours.get(today_weekday, 'Closed') if cafe.hours is mapping else cafe.hours }}
+            </span>
           </div>
 
           
@@ -99,7 +101,28 @@
           </div>
           <div class="info-row">
             <div class="label">Hours</div>
-            <div class="value">{{cafe.hours}}</div>
+            <div class="value">
+              {% if cafe.hours is mapping %}
+                <div style="font-weight: bold; color: #e67e22; margin-bottom: 0.5rem;">
+                  {{ today_weekday|capitalize }}: {{ cafe.hours.get(today_weekday, 'Closed') }} (Today)
+                </div>
+                
+                <details>
+                  <summary style="cursor: pointer; color: #666; font-size: 0.85rem;">View full week</summary>
+                  <div style="margin-top: 0.5rem; font-size: 0.9rem; line-height: 1.6;">
+                    {% set days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'] %}
+                    {% for d in days %}
+                      <div {% if d == today_weekday %} style="color: #e67e22; font-weight: bold;" {% endif %}>
+                        <span style="display: inline-block; width: 40px;">{{ d|capitalize }}:</span> 
+                        {{ cafe.hours.get(d, 'Closed') }}
+                      </div>
+                    {% endfor %}
+                  </div>
+                </details>
+              {% else %}
+                {{ cafe.hours }}
+              {% endif %}
+            </div>
           </div>
           <div class="info-row">
             <div class="label">Address</div>
