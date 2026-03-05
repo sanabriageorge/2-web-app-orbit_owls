@@ -47,7 +47,7 @@ a {
 }
 
 a.active {
-  color: #4f46e5;
+  color: #3e2723;
   font-weight: 600;
 }
 /* search specfic styles */
@@ -63,7 +63,7 @@ a.active {
   padding: 12px 10px;
   border-radius: 10px;
   border: none;
-  background: #4f46e5;
+  background: #3e2723;
   color: white;
   font-size: 1em;
   cursor: pointer;
@@ -291,7 +291,7 @@ a.active {
 }
 
 .input-field:focus {
-  border-color: #4f46e5;
+  border-color: #3e2723;
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
@@ -299,7 +299,7 @@ a.active {
   width: 100%;
   padding: 1rem;
   margin-top: 0.5rem;
-  background-color: #4f46e5;
+  background-color: #3e2723;
   color: white;
   border: none;
   border-radius: 10px;
@@ -310,7 +310,7 @@ a.active {
 }
 
 .primary-btn:hover {
-  background-color: #4338ca;
+  background-color: #3e2723;
 }
 
 .auth-link {
@@ -322,7 +322,7 @@ a.active {
 
 .auth-link a {
   display: inline;
-  color: #4f46e5;
+  color: #3e2723;
   font-weight: 600;
   padding: 0;
 }
@@ -380,7 +380,7 @@ a {
 }
 
 a.active {
-  color: #4f46e5;
+  color: #3e2723;
   font-weight: 600;
 }
 
@@ -526,7 +526,7 @@ a.active {
 .badge.primary {
   border-color: rgba(79, 70, 229, 0.35);
   background: rgba(79, 70, 229, 0.08);
-  color: #2f2ab8;
+  color: #3e2723;
   font-weight: 700;
 }
 
@@ -542,7 +542,7 @@ a.active {
   padding: 1rem;
   margin-top: 0.5rem;
   background: #ffffff;
-  color: #4f46e5;
+  color: #3e2723;
   border: 1px solid #ddd;
   border-radius: 10px;
   font-size: 1rem;
@@ -633,7 +633,7 @@ a.active {
   display: block;
   height: 100%;
   width: var(--w);
-  background: rgba(79, 70, 229, 0.65);
+  background: #3e2723;
 }
 
 .busy-row .level {
@@ -840,7 +840,7 @@ a {
 }
 
 a.active {
-  color: #4f46e5;
+  color: #3e2723;
   font-weight: 600;
 }
 
@@ -996,7 +996,7 @@ a.active {
 .badge.primary {
   border-color: rgba(79, 70, 229, 0.35);
   background: rgba(79, 70, 229, 0.08);
-  color: #2f2ab8;
+  color: #3e2723;
   font-weight: 700;
 }
 
@@ -1012,7 +1012,7 @@ a.active {
   padding: 1rem;
   margin-top: 0.5rem;
   background: #ffffff;
-  color: #4f46e5;
+  color: #3e2723;
   border: 1px solid #ddd;
   border-radius: 10px;
   font-size: 1rem;
@@ -1103,7 +1103,7 @@ a.active {
   display: block;
   height: 100%;
   width: var(--w);
-  background: rgba(79, 70, 229, 0.65);
+  background: 3e2723;
 }
 
 .busy-row .level {
@@ -1510,7 +1510,7 @@ h2 {
 
 .primary-btn {
   margin-top: 30px;
-  background: #5d5fef;
+  background: #3e2723;
   color: white;
   border: none;
   padding: 16px;
@@ -1522,7 +1522,7 @@ h2 {
 }
 
 .primary-btn:hover {
-  background: #4749d4;
+  background: #3e2723;
 }
 
 /* cafe preview styles */
@@ -1584,7 +1584,7 @@ h2 {
   display: inline-flex;
   align-items: center;
   padding: 0.55rem 1rem;
-  background: #4f46e5;
+  background: #3e2723;
   color: #fff;
   border-radius: 10px;
   font-size: 0.88rem;
@@ -1595,12 +1595,12 @@ h2 {
 }
 
 .cafe-preview_btn:hover {
-  background: #4338ca;
+  background: #3e2723;
   transform: translateY(-1px);
 }
 
 .cafe-card--active {
-  border-color: #4f46e5;
+  border-color: #3e2723;
   box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.25);
 }
 
@@ -1668,3 +1668,4 @@ h2 {
   font-size: 1.1rem;
   font-weight: bold;
 }
+

@@ -1,5 +1,6 @@
 import datetime
 import os
+import re
 
 import pymongo
 from bson.objectid import ObjectId
@@ -8,6 +9,8 @@ from flask import Flask, flash, redirect, render_template, request, url_for
 from flask_login import LoginManager, UserMixin, current_user, login_required, login_user, logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
 from pymongo import ASCENDING,DESCENDING
+from zoneinfo import ZoneInfo
+from datetime import timedelta
 
 # load .env file and create the app
 load_dotenv()
@@ -23,6 +26,7 @@ users_col   = db["users"]
 cafes_col   = db["cafes"]
 saved_col   = db["saved_places"]
 reviews_col = db["reviews"]
+checkins_col= db["checkins"]
 
 #Helper to update ratings
 def update_cafe_rating(cafe_id):
@@ -40,6 +44,27 @@ def update_cafe_rating(cafe_id):
         {"_id": cafe_id},
         {"$set": {"rating": average}}
     )
+#Helper function to extract times 
+def hours_list_from_range(hours_str):
+    parts= re.split(r"\s*[–—-]\s*",hours_str.strip())
+    if len(parts) != 2:
+        return [8, 10, 12, 15, 18]
+    def parse_time(t):
+        m= re.search(r"(\d{1,2})(?::(\d{2}))?\s*(AM|PM)", t, re.I)
+        if not m:
+            return None
+        h= int(m.group(1))
+        ampm= m.group(3).upper()
+        if ampm== "PM" and h!= 12:
+            h+= 12
+        if ampm== "AM" and h== 12:
+            h= 0
+        return h
+
+    start= parse_time(parts[0])
+    end= parse_time(parts[1])
+    return list(range(start, end + 1))
+
 # set up flask-login
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -308,18 +333,40 @@ def cafe_detail(cafe_id):
     if not cafe:
         flash("Cafe not found.", "error")
         return redirect(url_for("home"))
-        
-    reviews= list(reviews_col.find({"cafe_id": cafe["_id"]}))
+    
+    since= datetime.datetime.utcnow() - timedelta(days=30)
+    checkins= list(checkins_col.find({
+        "cafe_id": cafe["_id"],
+        "created_at": {"$gte": since}
+    }))
+    ny_tz= ZoneInfo("America/New_York")
+    utc_tz= ZoneInfo("UTC")
+    hour_counts= {}
+    #Convert to NY
+    for c in checkins:
+        utc_time= c["created_at"].replace(tzinfo=utc_tz)
+        ny_time= utc_time.astimezone(ny_tz)
+        hr= ny_time.hour
+        hour_counts[hr]= hour_counts.get(hr, 0) + 1
 
+    hours= hours_list_from_range(cafe.get("hours", ""))
+    hours= hours[::2] #List every two hours 
+    peak_times= [{"hour": hr, "count": hour_counts.get(hr, 0)} for hr in hours]
+    max_count= max((p["count"] for p in peak_times), default=0)
+
+    reviews= list(reviews_col.find({"cafe_id": cafe["_id"]}))
     for r in reviews:
         r["user_id_str"]= str(r.get("user_id"))
+    current_user_id= str(current_user.get_id())
 
-    current_user_id = str(current_user.get_id())
     return render_template(
         "indiv-cafe-screen.html",
-        cafe=cafe, 
+        cafe=cafe,
         reviews=reviews,
-        current_user_id=current_user_id
+        current_user_id=current_user_id,
+        peak_times=peak_times,
+        max_count=max_count,
+        hours=hours
     )
 
 #Posting reviews
@@ -470,6 +517,7 @@ def add_photo_url(cafe_id):
 
     return redirect(url_for("cafe_detail", cafe_id=cafe_id))
 
+#Delete photos
 @app.route("/cafe/<cafe_id>/photo/<photo_id>/delete", methods=["POST"])
 @login_required
 def delete_photo(cafe_id, photo_id):
@@ -499,6 +547,32 @@ def delete_photo(cafe_id, photo_id):
     )
     return redirect(url_for("cafe_detail", cafe_id=cafe_id))
 
+#Cafe check in 
+@app.route("/cafe/<cafe_id>/checkin", methods=["POST"])
+@login_required
+def add_checkin(cafe_id):
+    try:
+        cafe_obj_id = ObjectId(cafe_id)
+    except Exception:
+        flash("Invalid cafe link.", "error")
+        return redirect(url_for("home"))
+    
+    hour_str = (request.form.get("hour") or "").strip()
+    hour= int(hour_str)
+    ny_tz= ZoneInfo("America/New_York")
+    utc_tz= ZoneInfo("UTC")
+
+    now_ny= datetime.datetime.now(ny_tz)
+    ny_time= now_ny.replace(hour=hour, minute=0, second=0, microsecond=0)
+    utc_time= ny_time.astimezone(utc_tz).replace(tzinfo=None)  
+
+    checkins_col.insert_one({
+        "cafe_id": cafe_obj_id,
+        "user_id": ObjectId(current_user.get_id()),
+        "created_at": utc_time
+    })
+    flash(f"Checked in!", "success")
+    return redirect(url_for("cafe_detail", cafe_id=cafe_id))
 
 @app.route("/settings")
 @login_required
