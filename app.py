@@ -281,6 +281,10 @@ def home():
 @app.route("/search", methods=["GET"])
 @login_required
 def search():
+
+    ny_tz = ZoneInfo("America/New_York")
+    today_weekday = datetime.datetime.now(ny_tz).strftime('%a').lower()
+
     query = request.args.get("q")
     min_rating = request.args.get("min_rating")
     price = request.args.get("price_range")
@@ -318,7 +322,7 @@ def search():
 
     cafes = list(cafes_query)
 
-    return render_template("search.html", cafes=cafes)
+    return render_template("search.html", cafes=cafes, today_weekday=today_weekday)
 
 # Cafe Indiv Pages
 @app.route("/cafe/<cafe_id>")
@@ -342,14 +346,25 @@ def cafe_detail(cafe_id):
     ny_tz= ZoneInfo("America/New_York")
     utc_tz= ZoneInfo("UTC")
     hour_counts= {}
+
+    # get real time
+    ny_now = datetime.datetime.now(ny_tz)
+    today_weekday = ny_now.strftime('%a').lower()
+
     #Convert to NY
     for c in checkins:
         utc_time= c["created_at"].replace(tzinfo=utc_tz)
         ny_time= utc_time.astimezone(ny_tz)
         hr= ny_time.hour
         hour_counts[hr]= hour_counts.get(hr, 0) + 1
+    
+    raw_hours = cafe.get("hours", "")
+    if isinstance(raw_hours, dict):
+        today_hours_str = raw_hours.get(today_weekday, "")
+    else:
+        today_hours_str = raw_hours
 
-    hours= hours_list_from_range(cafe.get("hours", ""))
+    hours= hours_list_from_range(today_hours_str)
     hours= hours[::2] #List every two hours 
     peak_times= [{"hour": hr, "count": hour_counts.get(hr, 0)} for hr in hours]
     max_count= max((p["count"] for p in peak_times), default=0)
@@ -366,7 +381,8 @@ def cafe_detail(cafe_id):
         current_user_id=current_user_id,
         peak_times=peak_times,
         max_count=max_count,
-        hours=hours
+        hours=hours,
+        today_weekday=today_weekday
     )
 
 #Posting reviews
