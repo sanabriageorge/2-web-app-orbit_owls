@@ -45,7 +45,12 @@
     <div class="result-card">
       <div class="result-title">{{ cafe.name }}</div>
       <div class="result-meta">
-        {{ cafe.hours }} • Rating: {{ cafe.rating }} • Price: {{cafe.price_range}}
+        {% if cafe.hours is mapping %}
+          {{ cafe.hours.get(today_weekday, 'Closed') }}
+        {% else %}
+          {{ cafe.hours }}
+        {% endif %}
+        • Rating: {{ cafe.rating }} • Price: {{cafe.price_range}}
       </div>
     </div>
     {% endfor %} {% elif request.args.get('q') %}

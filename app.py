@@ -281,6 +281,10 @@ def home():
 @app.route("/search", methods=["GET"])
 @login_required
 def search():
+
+    ny_tz = ZoneInfo("America/New_York")
+    today_weekday = datetime.datetime.now(ny_tz).strftime('%a').lower()
+
     query = request.args.get("q")
     min_rating = request.args.get("min_rating")
     price = request.args.get("price_range")
@@ -318,7 +322,7 @@ def search():
 
     cafes = list(cafes_query)
 
-    return render_template("search.html", cafes=cafes)
+    return render_template("search.html", cafes=cafes, today_weekday=today_weekday)
 
 # Cafe Indiv Pages
 @app.route("/cafe/<cafe_id>")
